@@ -6,7 +6,7 @@ import { Switch, Route } from "react-router-dom";
 import ShopPage from './pages/ShopPage/ShopPage'
 import Header from './components/Header/Header'
 import AuthPage from './pages/AuthPage/AuthPage'
-import { auth } from './firebase/firebase.utils'
+import { auth, createUserProfileDocument } from './firebase/firebase.utils'
 
 
 class App extends React.Component {
@@ -17,13 +17,31 @@ class App extends React.Component {
     }
   }
 
+  // TODO check if this is correct
   unsubscribeFromAuth = () => console.log('Close empty subscription')
 
   componentDidMount () {
-    this.unsubscribeFromAuth = auth.onAuthStateChanged(user => {
-      this.setState({currentUser: user})
-      console.log('user')
-      console.log(user)
+    this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
+      if (userAuth) {
+        // Create new user and return reference
+        const userRef = await createUserProfileDocument(userAuth)
+        // on snapshot change (by document reference)
+        userRef.onSnapshot(snapshot => {
+          // set local state
+          this.setState({
+            currentUser: {
+              id: snapshot.id,
+              ...snapshot.data()
+            }
+          })
+          console.log('on snapshot')
+          console.log(this.state)
+        })
+      }
+
+      // this getting called before
+      this.setState({currentUser: userAuth})
+
     })
   }
 

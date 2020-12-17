@@ -2,7 +2,7 @@ import React from 'react'
 import './App.css';
 import Homepage from './pages/Homepage/Homepage'
 
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import ShopPage from './pages/ShopPage/ShopPage'
 import Header from './components/Header/Header'
@@ -13,7 +13,6 @@ import { setCurrentUser } from './redux/user/userActions'
 
 class App extends React.Component {
 
-  // TODO check if this is correct
   unsubscribeFromAuth = () => console.log('Close empty subscription')
 
   componentDidMount () {
@@ -44,21 +43,26 @@ class App extends React.Component {
   }
 
   render () {
+    const { currentUser } = this.props
     return (
       <div>
         <Header/>
         <Switch>
           <Route exact path="/" component={Homepage}/>
           <Route path="/shop" component={ShopPage}/>
-          <Route path="/signin" component={AuthPage}/>
+          <Route exact path="/signin" render={() => currentUser ? (<Redirect to='/' />) : (<AuthPage/>)}/>
         </Switch>
       </div>
     );
   }
 }
 
+const mapStateToProps = ({user}) => ({
+  currentUser: user.currentUser
+})
+
 const dispatchProps = {
   setCurrentUser: setCurrentUser
 }
 
-export default connect(null, dispatchProps)(App);
+export default connect(mapStateToProps, dispatchProps)(App);

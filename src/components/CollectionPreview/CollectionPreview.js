@@ -9,8 +9,8 @@ const CollectionPreview = ({title, items}) => {
         {
           items
             .slice(0, 4)
-            .map(({id, ...itemProps}) => (
-              <CollectionItem key={id} {...itemProps}/>
+            .map((item) => (
+              <CollectionItem key={item.id} item={item}/>
             ))
         }
       </div>

@@ -1,0 +1,15 @@
+import { createSelector } from "reselect"
+
+
+// input selector
+export const selectCart = (state) => state.cart
+
+export const selectCartItems = createSelector(
+  [selectCart],
+  (cart) => cart.cartItems
+)
+
+export const selectCartItemsCount = createSelector(
+  [selectCartItems],
+  (cartItems) => cartItems.reduce((accum, item) => accum + item.quantity, 0)
+)

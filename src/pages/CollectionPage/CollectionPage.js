@@ -3,13 +3,18 @@ import React from "react"
 import './CollectionPage.scss'
 import { selectCollection } from "../../redux/shop/shopSelector"
 import { connect } from "react-redux"
+import CollectionItem from "../../components/CollectionItem/CollectionItem"
 
 const CollectionPage = ({collection}) => {
+  const {title, items} = collection
   return (
     <div className='collection-page'>
-      <pre>
-        {JSON.stringify(collection)}
-      </pre>
+      <h2 className="title">{title}</h2>
+      <div className="items">
+        {
+          items.map(item => <CollectionItem key={item.id} item={item}/>)
+        }
+      </div>
     </div>
   )
 }
